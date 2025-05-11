@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Information</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      padding: 2px;
+      border-radius: 16px;
+      background: #111;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      right: -1px;
+      bottom: -1px;
+      z-index: 0;
+      border-radius: 16px;
+      background: linear-gradient(90deg, rgba(255,0,0,0.6), rgba(0,255,255,0.6), rgba(0,255,0,0.6), rgba(255,0,255,0.6), rgba(255,255,0,0.6), rgba(255,0,0,0.6));
+      background-size: 400%;
+      animation: lightRun 8s linear infinite;
+      filter: blur(4px);
+    }
+
+    @keyframes lightRun {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 400% 50%; }
+    }
+
+    .form-box {
+      position: relative;
+      background: #000;
+      border-radius: 14px;
+      padding: 35px 30px;
+      z-index: 1;
+    }
+
+    .form-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      cursor: pointer;
+      color: #aaa;
+    }
+
+    input::placeholder { color: #aaa; }
+    input:focus { border-color: #00ffe1; }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #00ffc3;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #000;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover { background: #00e6b1; }
+
+    .message {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #00ffc3;
+      display: none;
+    }
+
+    .error { color: #ff5e5e; }
+
+    @media (max-width: 480px) {
+      .form-box {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-box">
+      <h2>Information</h2>
+      <form id="signupFormReal">
+        <input type="text" name="fullname" placeholder="Full Name" required />
+        <input type="tel" name="mobile" placeholder="Mobile Number" pattern="[0-9]{10}" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="text" name="interest" placeholder="Interest" required />
+        <input type="text" name="location" placeholder="Location" required />
+        <input type="text" name="education" placeholder="Education" required />
+        <button type="submit">Submit</button>
+        <div id="signupMessage" class="message"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyvOK4-2N1v9KB1nvHpSnE-917WAGm0x7ibCL_FJv-pE8kq44U7grcJcE3dnbJLnISoQA/exec';
+
+    document.getElementById('signupFormReal').addEventListener('submit', e => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (response.ok) {
+          showMessage('signupMessage', 'Thank You', false);
+          form.reset();
+        } else {
+          showMessage('signupMessage', 'Error saving data.', true);
+        }
+      })
+      .catch(() => {
+        showMessage('signupMessage', 'Something went wrong.', true);
+      });
+    });
+
+    function showMessage(id, message, isError) {
+      const msg = document.getElementById(id);
+      msg.classList.toggle('error', isError);
+      msg.textContent = message;
+      msg.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
